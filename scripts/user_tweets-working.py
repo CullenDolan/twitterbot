@@ -15,19 +15,19 @@ def auth():
 
 def create_url(pagination_token):
     # creates a url to pass to the api
-    user_id = 1190051
+    user_id = 8819662
     max_results = 100
+    exclude = 'replies'
     if pagination_token == '':
         return "https://api.twitter.com/2/users/{}/tweets?max_results={}".format(user_id, max_results)
     else:
-        return "https://api.twitter.com/2/users/{}/tweets?max_results={}&pagination_token={}".format(user_id, max_results, pagination_token)
+        return "https://api.twitter.com/2/users/{}/tweets?max_results={}&pagination_token={}&exclude={}".format(user_id, max_results, pagination_token, exclude)
 
 
 def get_params():
     # defined the parameters that will be requested from the api
     # https://developer.twitter.com/en/docs/twitter-api/tweets/timelines/api-reference/get-users-id-tweets
     return {"tweet.fields": "created_at,public_metrics,context_annotations,entities"}
-    # return {"tweet.fields": "created_at"}
 
 
 def create_headers(bearer_token):
@@ -73,17 +73,21 @@ def prep_token_string(json_response):
 
 def main():
     x = 0
+    page = 0
     full_tweet_list = []
     pagination_token = ''
-    while x < 32:
+    while x == 0:
         json_response = build_full_api_call(pagination_token)
         tweet_response = json_response['data']
         full_tweet_list = full_tweet_list + tweet_response
-        pagination_token = prep_token_string(json_response)
-        print('page: ', x)
-        x += 1
+        try:
+            pagination_token = prep_token_string(json_response)
+            print('page: ', page)
+            page += 1
+        except:
+            x = 1
     df = pd.DataFrame(full_tweet_list)
-    df.to_csv('roeloef.csv')
+    df.to_csv('robmay_no_rep.csv')
 
 if __name__ == "__main__":
     main()
