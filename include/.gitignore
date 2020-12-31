@@ -1,1 +1,7 @@
-scripts/tweets/
+twitterbot/scripts/tweets/
+twitterbot/bin
+twitterbot/include
+twitterbot/lib/python3.8/site-packages/
+twitterbot/share/python-wheels/
+twitterbot/lib64
+twitterbot/pyvenv.cfg 
