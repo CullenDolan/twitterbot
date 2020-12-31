@@ -13,10 +13,11 @@ def auth():
     return os.environ.get("BEARER_TOKEN")
 
 
-def create_url(pagination_token):
+def create_url(pagination_token, user_id):
     # creates a url to pass to the api
-    user_id = 8819662
+    # user_id = 8819662
     max_results = 100
+    # when replies excluded, api only returns 800. when retweets are excluded, 3200 returned
     exclude = 'replies'
     if pagination_token == '':
         return "https://api.twitter.com/2/users/{}/tweets?max_results={}".format(user_id, max_results)
@@ -48,11 +49,11 @@ def connect_to_endpoint(url, headers, params):
     return response.json()
 
 
-def build_full_api_call(pagination_token):
+def build_full_api_call(pagination_token,user_id, BEARER_TOKEN):
     # build all the pieces to create the full api call
-    bearer_token = auth()
-    url = create_url(pagination_token)
-    headers = create_headers(bearer_token)
+    #bearer_token = auth()
+    url = create_url(pagination_token, user_id)
+    headers = create_headers(BEARER_TOKEN)
     params = get_params()
     return connect_to_endpoint(url, headers, params)
 
@@ -70,14 +71,21 @@ def prep_token_string(json_response):
     pagination_token = pagination_token[:-1]
     return pagination_token
 
+def get_user_feedback():
+    # ask the user for the user ID to look up and bearer token
+    user_id = input('What is the user ID of the twitter user you want to find? ')
+    BEARER_TOKEN = input('What is your bearer token? ')
+    return user_id, BEARER_TOKEN
+
 
 def main():
+    user_id, BEARER_TOKEN = get_user_feedback()
     x = 0
     page = 0
     full_tweet_list = []
     pagination_token = ''
     while x == 0:
-        json_response = build_full_api_call(pagination_token)
+        json_response = build_full_api_call(pagination_token,user_id, BEARER_TOKEN)
         tweet_response = json_response['data']
         full_tweet_list = full_tweet_list + tweet_response
         try:
