@@ -1,3 +1,4 @@
+# some exmample user ids of tweets i wanted to gather
 user_dict = {
     'chamath':'3291691',
     'robmay':'8819662',
